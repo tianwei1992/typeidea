@@ -26,7 +26,7 @@ class Post(models.Model):
         verbose_name = verbose_name_plural = "文章"
     
     def __str__(self):
-        return self.name
+        return self.title
 
 
 class Category(models.Model):
