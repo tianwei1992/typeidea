@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
+from django.contrib.admin.models import LogEntry
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
@@ -131,3 +132,8 @@ class TagAdmin(BaseOwnerAdmin):
         obj.owner = request.user
         super().save_model(request, obj, form, change)
     """
+
+
+@admin.register(LogEntry, site=custom_site)
+class LogEntryAdmin(admin.ModelAdmin):
+    list_display=('object_repr', 'object_id', 'action_flag', 'user', 'change_message')
