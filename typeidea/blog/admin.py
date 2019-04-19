@@ -7,6 +7,7 @@ from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
 from .models import Post, Category, Tag
+from .adminforms import PostAdminForm
 
 
 class CategoryOwnerFilter(admin.SimpleListFilter):
@@ -33,6 +34,7 @@ class CategoryOwnerFilter(admin.SimpleListFilter):
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
+    form = PostAdminForm
     list_display = [
        'title', 'category', 'status',
        'owner', 'created_time', 'operator'
@@ -63,10 +65,10 @@ class PostAdmin(admin.ModelAdmin):
 
     fieldsets = (  # 跟fields互斥, 分版块
         ('基础配置', {
-            'fields': (('category', 'title'), 'content')
+            'fields': (('category', 'title'), 'desc', 'content')
         }),
         ('高级配置', {
-            'fields': ('tags', ),
+            'fields': ('tags', 'status'),
         }),
     )
     
