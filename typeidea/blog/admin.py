@@ -42,6 +42,7 @@ class PostAdmin(admin.ModelAdmin):
     search_fields = ['title', 'category__name', 'owner__username']
     
     # fields控制的是管理后台新增页面显示
+    """
     fields = (
         ('title', 'category'),    # 元组表示，2个字段分布在1行
         'desc',
@@ -50,10 +51,24 @@ class PostAdmin(admin.ModelAdmin):
         'tags',
     )
 
+    exclude = ('owner',)    # owner是自动填充，不在fields里面填写
+    """
+
     actions_on_top = True
 
-    save_on_top = True
+    save_on_bottom = True
     show_full_result_count = True
+
+    filter_horizontal = ('tags', )    # 控制多选字段中，可选与选中的位置关系
+
+    fieldsets = (  # 跟fields互斥, 分版块
+        ('基础配置', {
+            'fields': (('category', 'title'), 'content')
+        }),
+        ('高级配置', {
+            'fields': ('tags', ),
+        }),
+    )
     
     def operator(self, obj):
         """一个自定义字段"""
