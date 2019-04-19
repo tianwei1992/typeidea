@@ -4,8 +4,31 @@ from __future__ import unicode_literals
 from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
+from django.utils.translation import gettext_lazy as _
 
 from .models import Post, Category, Tag
+
+
+class CategoryOwnerFilter(admin.SimpleListFilter):
+    title = _('分类过滤器')
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'owner_category'
+
+    def lookups(self, request, model_admin):
+        """
+        返回所有可以作为过滤条件的选项
+        """
+        return Category.objects.filter(owner=request.user).values_list('id', 'name')
+
+    def queryset(self, request, queryset):
+        """
+        按每个过滤条件，返回结果集
+        """
+        category_id = self.value()
+        if category_id:
+            return queryset.filter(category_id=self.value())
+        return queryset
 
 
 @admin.register(Post)
@@ -15,7 +38,7 @@ class PostAdmin(admin.ModelAdmin):
        'owner', 'created_time', 'operator'
     ]# operator是自定义字段
 
-    list_filter = ['category']
+    list_filter = [CategoryOwnerFilter]
     search_fields = ['title', 'category__name', 'owner__username']
     
     # fields控制的是管理后台新增页面显示
@@ -45,7 +68,10 @@ class PostAdmin(admin.ModelAdmin):
         obj.owner = request.user
         super().save_model(request, obj, form, change)
 
-
+    def get_queryset(self, request):
+        """通过重载，对list_display的结果进行过滤"""
+        qs = super().get_queryset(request)
+        return qs.filter(owner=request.user)
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display=('name', 'status', 'is_nav', 'created_time', 'owner', 'post_count')
@@ -60,6 +86,7 @@ class CategoryAdmin(admin.ModelAdmin):
         """一个自定义字段"""
         return obj.post_set.count()
     post_count.short_description = '文章数量'
+
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
