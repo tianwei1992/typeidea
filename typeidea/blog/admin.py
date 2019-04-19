@@ -7,6 +7,7 @@ from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
 from typeidea.custom_site import custom_site
+from typeidea.base_admin import BaseOwnerAdmin
 
 from .models import Post, Category, Tag
 from .adminforms import PostAdminForm
@@ -35,7 +36,7 @@ class CategoryOwnerFilter(admin.SimpleListFilter):
 
 
 @admin.register(Post, site=custom_site)
-class PostAdmin(admin.ModelAdmin):
+class PostAdmin(BaseOwnerAdmin):
     form = PostAdminForm
     list_display = [
        'title', 'category', 'status',
@@ -82,16 +83,15 @@ class PostAdmin(admin.ModelAdmin):
         )
     operator.short_description = '操作'
 
+    """基类中已有，不再需要了
     def save_model(self, request, obj, form, change):
-        """保存之前自动与当前user关联"""
         obj.owner = request.user
         super().save_model(request, obj, form, change)
 
     def get_queryset(self, request):
-        """通过重载，对list_display的结果进行过滤"""
         qs = super().get_queryset(request)
         return qs.filter(owner=request.user)
-
+    """
 
 class PostInlineAdmin(admin.StackedInline):
     """在同一页面编辑关联数据"""
@@ -102,17 +102,18 @@ class PostInlineAdmin(admin.StackedInline):
 
 
 @admin.register(Category, site=custom_site)
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(BaseOwnerAdmin):
     list_display=('name', 'status', 'is_nav', 'created_time', 'owner', 'post_count')
     fields = ('name', 'status', 'is_nav')
     inlines = [
         PostInlineAdmin,
     ]    # 在Category编辑页面，顺便一起展示Category关联的文章的编辑页面
 
+    """
     def save_model(self, request, obj, form, change):
-        """保存之前自动与当前user关联"""
         obj.owner = request.user
         super().save_model(request, obj, form, change)
+    """
 
     def post_count(self, obj):
         """一个自定义字段"""
@@ -121,11 +122,12 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 @admin.register(Tag, site=custom_site)
-class TagAdmin(admin.ModelAdmin):
+class TagAdmin(BaseOwnerAdmin):
     list_display=('name', 'status', 'created_time', 'owner')
     fields = ('name', 'status')
 
+    """
     def save_model(self, request, obj, form, change):
-        """保存之前自动与当前user关联"""
         obj.owner = request.user
         super().save_model(request, obj, form, change)
+    """
