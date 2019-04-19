@@ -89,10 +89,23 @@ class PostAdmin(admin.ModelAdmin):
         """通过重载，对list_display的结果进行过滤"""
         qs = super().get_queryset(request)
         return qs.filter(owner=request.user)
+
+
+class PostInlineAdmin(admin.StackedInline):
+    """在同一页面编辑关联数据"""
+    fields = ('title', 'status')
+    # extra = 2  # 控制额外多几个
+    max_num = 4
+    model = Post
+
+
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display=('name', 'status', 'is_nav', 'created_time', 'owner', 'post_count')
     fields = ('name', 'status', 'is_nav')
+    inlines = [
+        PostInlineAdmin,
+    ]    # 在Category编辑页面，顺便一起展示Category关联的文章的编辑页面
 
     def save_model(self, request, obj, form, change):
         """保存之前自动与当前user关联"""
