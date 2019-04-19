@@ -16,6 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from .custom_site import custom_site
+
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('super-admin/', admin.site.urls),
+    path('admin/', custom_site.urls),    #以上admin.site是自带的一个site，而custom_site是我们自定义的site
 ]

@@ -6,6 +6,8 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
+from typeidea.custom_site import custom_site
+
 from .models import Post, Category, Tag
 from .adminforms import PostAdminForm
 
@@ -32,7 +34,7 @@ class CategoryOwnerFilter(admin.SimpleListFilter):
         return queryset
 
 
-@admin.register(Post)
+@admin.register(Post, site=custom_site)
 class PostAdmin(admin.ModelAdmin):
     form = PostAdminForm
     list_display = [
@@ -76,7 +78,7 @@ class PostAdmin(admin.ModelAdmin):
         """一个自定义字段"""
         return format_html(
             '<a href="{}">编辑</a>',
-            reverse('admin:blog_post_change', args=(obj.id,))
+            reverse('cus_site:blog_post_change', args=(obj.id,))
         )
     operator.short_description = '操作'
 
@@ -99,7 +101,7 @@ class PostInlineAdmin(admin.StackedInline):
     model = Post
 
 
-@admin.register(Category)
+@admin.register(Category, site=custom_site)
 class CategoryAdmin(admin.ModelAdmin):
     list_display=('name', 'status', 'is_nav', 'created_time', 'owner', 'post_count')
     fields = ('name', 'status', 'is_nav')
@@ -118,7 +120,7 @@ class CategoryAdmin(admin.ModelAdmin):
     post_count.short_description = '文章数量'
 
 
-@admin.register(Tag)
+@admin.register(Tag, site=custom_site)
 class TagAdmin(admin.ModelAdmin):
     list_display=('name', 'status', 'created_time', 'owner')
     fields = ('name', 'status')
