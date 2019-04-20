@@ -31,8 +31,21 @@ class TestCategory(TestCase):
         user = User.objects.annotate(cate_sum=Sum('category__status')).get(username="the5fire")
         self.assertEqual(user.cate_sum, 10, '总计是10')
 
-        category = Category.objects.filter(id=1).update(status=F('status') + 1)
+        category = Category.objects.filter(id=1).update(status=F('status') + 1)   # 因为在models里面使用自定义Manger做了过滤，这一条实质上没有任何改动
 
         print(user.cate_sum)
-        self.assertEqual(user.cate_sum, 11, '总计11')
+        self.assertEqual(user.cate_sum, 10, '总计10')
         pp(connection.queries)
+
+    def test_values(self):
+        """严格意义上，这个方法并不是测试，只是顺道展示queryset的3个不同接口"""
+        categories = Category.objects.values('name').filter(status=1)
+        print(categories)
+
+        categories = Category.objects.values_list('name')
+        print(categories)
+
+        categories = Category.objects.values_list('name', flat=True)
+        print(categories)
+        for cate_name in categories:
+            print(cate_name)
