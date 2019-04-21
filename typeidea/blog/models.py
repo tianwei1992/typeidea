@@ -3,6 +3,7 @@ from  __future__ import unicode_literals
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Q
 
 
 class Post(models.Model):
@@ -14,7 +15,7 @@ class Post(models.Model):
     title = models.CharField(max_length=50, verbose_name="标题")
     desc = models.CharField(max_length=255, blank=True, verbose_name="摘要")
     category = models.ForeignKey('Category', verbose_name="分类", on_delete=models.CASCADE)
-    tags = models.ManyToManyField('Tag', verbose_name="标签")
+    tags = models.ManyToManyField('Tag', verbose_name="标签", related_name='post_set')
 
     content = models.TextField(verbose_name="内容", help_text="注：目前仅支持Markdown格式数据")
     status = models.IntegerField(default=1, choices=STATUS_ITEMS, verbose_name="状态")
@@ -27,7 +28,36 @@ class Post(models.Model):
     
     def __str__(self):
         return self.title
+    
+    @staticmethod
+    def get_by_tag(tag_id):
+        """如果对应tag存在，只展示该tag下关联的文章; 否则，没有文章可展示"""
+        try:
+            tag = Tag.objects.get(id=tag_id)
+        except Tag.DoesNotExist:
+            post_list = []
+            tag = None
+        else:
+            post_list = tag.post_set.filter(status=1)
 
+        return post_list, tag
+        
+    @staticmethod
+    def get_by_category(category_id):
+        """如果对应category存在，只展示该category下关联的文章; 否则，展示所有的文章"""
+        try:
+            category = Category.objects.get(id=category_id)
+        except Category.DoesNotExist:
+            post_list = Post.objects.filter(status=1)
+            category = None
+        else:
+            post_list = Post.objects.filter(Q(category__id=category_id) & Q(status=1))
+        return post_list, category
+
+    @classmethod
+    def latest_posts(cls):
+        queryset = cls.objects.filter(status=1)
+        return queryset
 
 class TestManager(models.Manager):
     def get_queryset(self):
