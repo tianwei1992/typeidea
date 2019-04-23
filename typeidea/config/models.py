@@ -28,16 +28,23 @@ class Link(models.Model):
 
 
 class SideBar(models.Model):
+    STATUS_SHOW = 1
+    STATUS_HIDE = 0
     STATUS_ITEMS = (
-        (1, '展示'),
-        (2, '下线'),
+        (STATUS_SHOW, '展示'),    # 避免魔法数字
+        (STATUS_HIDE, '隐藏'),
     )
+    DISPLAY_HTML = 1
+    DISPLAY_LATEST = 2
+    DISPLAY_HOT = 3
+    DISPLAY_COMMENT = 4
     SIDE_TYPE = (
-        (1, 'HTML'),
-        (2, '最新文章'),
-        (3, '最热文章'),
-        (4, '最近评论'),
-    )
+        (DISPLAY_HTML, 'HTML'),
+        (DISPLAY_LATEST, '最新文章'),
+        (DISPLAY_HOT, '最热文章'),
+        (DISPLAY_COMMENT, '最近评论'),
+   )
+ 
     title = models.CharField(max_length=50, verbose_name="标题")
     display_type = models.PositiveIntegerField(default=1, choices=SIDE_TYPE,
                                                verbose_name="展示类型")

@@ -8,10 +8,16 @@ from django.db.models import Q
 
 class Post(models.Model):
     STATUS_ITEMS = (
-        (1, '上线'),
-        (2, '草稿'),
-        (3, '删除'),
+        (1, '展示'),
+        (2, '下线'),
     )
+    SIDE_TYPE = (
+        (1, 'HTML'),
+        (2, '最新文章'),
+        (3, '最热文章'),
+        (4, '最近评论'),
+    )
+
     title = models.CharField(max_length=50, verbose_name="标题")
     desc = models.CharField(max_length=255, blank=True, verbose_name="摘要")
     category = models.ForeignKey('Category', verbose_name="分类", on_delete=models.CASCADE)
@@ -22,7 +28,7 @@ class Post(models.Model):
     owner = models.ForeignKey(User, verbose_name="作者", on_delete=models.CASCADE)
 
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
-
+    
     class Meta:
         verbose_name = verbose_name_plural = "文章"
     
@@ -66,9 +72,11 @@ class TestManager(models.Manager):
 class Category(models.Model):
     objects = TestManager()
 
+    STATUS_NORMAL = 1
+    STATUS_DELETE = 0
     STATUS_ITEMS = (
-        (1, '可用'),
-        (2, '删除'),
+        (STATUS_NORMAL, '正常'),
+        (STATUS_DELETE, '删除'),
     )
     name = models.CharField(max_length=50, verbose_name="名称")
     status = models.PositiveIntegerField(default=1, choices=STATUS_ITEMS, verbose_name="状态")
@@ -101,9 +109,11 @@ class Category(models.Model):
         }
 
 class Tag(models.Model):
+    STATUS_NORMAL = 1
+    STATUS_DELETE = 0
     STATUS_ITEMS = (
-        (1, '正常'),
-        (2, '删除'),
+        (STATUS_NORMAL, '正常'),
+        (STATUS_DELETE, '删除'),
     )
 
     name = models.CharField(max_length=10, verbose_name="名称")
