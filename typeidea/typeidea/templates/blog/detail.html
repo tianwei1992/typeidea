@@ -1,22 +1,18 @@
-<ul>
-    {% for cate in navs %}
-    <li><a href="{% url 'category' cate.id %}">{{ cate.name }}</a></li>
-    {% endfor %}
-</ul>
+{% extends "./base.html" %}
 
-{% if tag %}
-标签页：{{ tag.name }}
-{% endif %}
+{% block title %}
+{{ post.title }}
+{% endblock %}
+
+{% block main %}
+{% if post %}
 <div>
-
-<p>{{ post.title }}</p>
-<p>{{ post.owner.username }}</p>
-<p>{{ post.desc }}</p>
-
+    <span>分类： {{ post.category.name }}</span>
+    <span>作者： {{ post.owner.username }}</span>
 </div>
-
-<ul>
-    {% for cate in normals %}
-    <li><a href="{% url 'category' cate.id %}">{{ cate.name }}</a></li>
-    {% endfor %}
-</ul>
+<hr/>
+<p>
+    {{ post.content }}
+</p>
+{% endif %}
+{% endblock %}
