@@ -18,17 +18,17 @@ from django.urls import path
 from django.conf.urls import url
 
 from .custom_site import custom_site
-from blog.views import post_list, post_detail
+from blog.views import IndexView, CategoryView, TagView, PostView
 
 
 urlpatterns = [
     path('super-admin/', admin.site.urls),
     path('admin/', custom_site.urls),    #以上admin.site是自带的一个site，而custom_site是我们自定义的site
 
-    url(r'^$', post_list, name='all_posts'),
-    url(r'^tag/(?P<tag_id>\d+)/$', post_list, name='tag'),
-    url(r'^category/(?P<category_id>\d+)/$', post_list, name='category'),
-    url(r'^post_detail/(?P<post_id>\d+).html$', post_detail, name='post_detail'),
+    url(r'^$', IndexView.as_view(), name='all_posts'),
+    url(r'^tag/(?P<tag_id>\d+)/$', TagView.as_view(), name='tag'),
+    url(r'^category/(?P<category_id>\d+)/$', CategoryView.as_view(), name='category'),
+    url(r'^post_detail/(?P<post_id>\d+).html$', PostView.as_view(), name='post_detail'),
     # url(r'^links/$', links)
 
 ]
