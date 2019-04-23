@@ -1,3 +1,12 @@
+<ul>
+    {% for cate in navs %}
+    <li><a href="{% url 'category' cate.id %}">{{ cate.name }}</a></li>
+    {% endfor %}
+</ul>
+
+{% if tag %}
+标签页：{{ tag.name }}
+{% endif %}
 <div>
 
 <p>{{ post.title }}</p>
@@ -5,3 +14,9 @@
 <p>{{ post.desc }}</p>
 
 </div>
+
+<ul>
+    {% for cate in normals %}
+    <li><a href="{% url 'category' cate.id %}">{{ cate.name }}</a></li>
+    {% endfor %}
+</ul>

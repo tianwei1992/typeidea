@@ -83,6 +83,22 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    @classmethod
+    def get_navs(cls):
+        categories = cls.objects.filter(status=1)
+
+        nav_cates = []
+        normal_cates = []
+
+        for cate in categories:
+            if cate.is_nav:
+                nav_cates.append(cate)
+            else:
+                normal_cates.append(cate)
+        return {
+            'navs': nav_cates,
+            'normals': normal_cates,
+        }
 
 class Tag(models.Model):
     STATUS_ITEMS = (

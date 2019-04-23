@@ -25,9 +25,9 @@ urlpatterns = [
     path('super-admin/', admin.site.urls),
     path('admin/', custom_site.urls),    #以上admin.site是自带的一个site，而custom_site是我们自定义的site
 
-    url(r'^$', post_list),
-    url(r'^tag/(?P<tag_id>\d+)/$', post_list),
-    url(r'^category/(?P<category_id>\d+)/$', post_list),
+    url(r'^$', post_list, name='all_posts'),
+    url(r'^tag/(?P<tag_id>\d+)/$', post_list, name='tag'),
+    url(r'^category/(?P<category_id>\d+)/$', post_list, name='category'),
     url(r'^post_detail/(?P<post_id>\d+).html$', post_detail, name='post_detail'),
     # url(r'^links/$', links)
 

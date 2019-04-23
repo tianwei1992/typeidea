@@ -21,6 +21,7 @@ def post_list(request, tag_id=None, category_id=None):
         'tag': tag, 
         'post_list': post_list, 
     }
+    context.update(Category.get_navs())
 
     return render(request, 'blog/list.html', context=context)
 
@@ -31,5 +32,6 @@ def post_detail(request, post_id):
     context={
         'post':post,
     }
+    context.update(Category.get_navs())
 
     return render(request, 'blog/detail.html', context=context)
