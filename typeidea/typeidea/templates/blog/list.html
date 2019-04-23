@@ -31,3 +31,11 @@
     <li><a href="{% url 'category' cate.id %}">{{ cate.name }}</a></li>
     {% endfor %}
 </ul>
+
+<div>侧边栏展示
+    {% for sidebar in sidebars %}
+    <h4>{{ sidebar.title }}</h4>
+    {{ sidebar.content_html }}
+    {% endfor %}
+
+</div>

@@ -3,6 +3,7 @@ from django.db.models import Q
 
 # Create your views here.
 from .models import Post, Tag, Category
+from config.models import SideBar
 
 
 def post_list(request, tag_id=None, category_id=None):
@@ -20,6 +21,7 @@ def post_list(request, tag_id=None, category_id=None):
         'category': category,    # tag和category本身也是需要展示的，如果存在的话
         'tag': tag, 
         'post_list': post_list, 
+        'sidebars': SideBar.get_all(),
     }
     context.update(Category.get_navs())
 
@@ -30,7 +32,8 @@ def post_detail(request, post_id):
     post = Post.objects.get(id=post_id)
 
     context={
-        'post':post,
+        'post': post,
+        'sidebars': SideBar.get_all(),
     }
     context.update(Category.get_navs())
 
