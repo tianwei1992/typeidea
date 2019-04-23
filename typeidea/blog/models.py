@@ -38,7 +38,7 @@ class Post(models.Model):
             post_list = []
             tag = None
         else:
-            post_list = tag.post_set.filter(status=1)
+            post_list = tag.post_set.select_related('owner', 'category').filter(status=1)    # select_related()把Post对应Foreign Key提前查出，缓存备用，在模板渲染时直接用，避免N+1问题，提升性能
 
         return post_list, tag
         
@@ -51,7 +51,7 @@ class Post(models.Model):
             post_list = Post.objects.filter(status=1)
             category = None
         else:
-            post_list = Post.objects.filter(Q(category__id=category_id) & Q(status=1))
+            post_list = Post.objects.select_related('owner', 'category').filter(Q(category__id=category_id) & Q(status=1))
         return post_list, category
 
     @classmethod
