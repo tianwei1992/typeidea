@@ -23,3 +23,13 @@ def post_list(request, tag_id=None, category_id=None):
     }
 
     return render(request, 'blog/list.html', context=context)
+
+
+def post_detail(request, post_id):
+    post = Post.objects.get(id=post_id)
+
+    context={
+        'post':post,
+    }
+
+    return render(request, 'blog/detail.html', context=context)

@@ -18,7 +18,7 @@ from django.urls import path
 from django.conf.urls import url
 
 from .custom_site import custom_site
-from blog.views import post_list
+from blog.views import post_list, post_detail
 
 
 urlpatterns = [
@@ -28,7 +28,7 @@ urlpatterns = [
     url(r'^$', post_list),
     url(r'^tag/(?P<tag_id>\d+)/$', post_list),
     url(r'^category/(?P<category_id>\d+)/$', post_list),
-    # url(r'^post_detail/(<?P<post_id>\d+).html$', post_detail),
+    url(r'^post_detail/(?P<post_id>\d+).html$', post_detail, name='post_detail'),
     # url(r'^links/$', links)
 
 ]

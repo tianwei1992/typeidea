@@ -10,7 +10,12 @@
 <ul>
 {% for post in post_list %}
     <li>
-        {{ post.title }}
+        <a href="{% url 'post_detail' post.id %}">{{ post.title }}</a>
+        <div>
+            <span>作者：{{ post.owner.username }}</span>
+            <span>分类： {{ post.category.name }}</span>
+        </div>
+        <p>{{ post.desc }}</p>
     </li>
 {% endfor %}
 </ul>
