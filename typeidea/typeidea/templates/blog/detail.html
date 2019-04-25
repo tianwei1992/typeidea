@@ -6,13 +6,30 @@
 
 {% block main %}
 {% if post %}
-<div>
-    <span>分类： {{ post.category.name }}</span>
-    <span>作者： {{ post.owner.username }}</span>
-</div>
+      <div class="panel panel-default">
+             <div class="panel-body">
+            <h3>{{ post.title }}</h3>
+            <span><strong>作者</strong>：{{ post.owner.username }}</span> &nbsp &nbsp
+            <span><strong>分类</strong>：<a href="{% url 'category' post.category.id %}">{{ post.category.name }}</a></span> &nbsp &nbsp  
+            <span><strong>标签</strong>：
+            {% if post.tags.all.count %}
+            {% for tag in post.tags.all %}
+                <a href="{% url 'tag' tag.id %}">{{ tag.name }}</a> &nbsp
+            {% endfor %}
+            {% else %}
+            暂空
+            {% endif %}
+            </span>
+
 <hr/>
+
 <p>
     {{ post.content }}
 </p>
+        </div>
+     </div>
+{% else %}
+没有这篇文章
 {% endif %}
+
 {% endblock %}
