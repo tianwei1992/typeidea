@@ -18,7 +18,10 @@ from django.urls import path
 from django.conf.urls import url
 
 from .custom_site import custom_site
-from blog.views import IndexView, CategoryView, TagView, PostView
+from blog.views import (
+    IndexView, CategoryView, TagView,
+     PostView, AuthorView, SearchView
+)
 
 
 urlpatterns = [
@@ -28,6 +31,8 @@ urlpatterns = [
     url(r'^$', IndexView.as_view(), name='all_posts'),
     url(r'^tag/(?P<tag_id>\d+)/$', TagView.as_view(), name='tag'),
     url(r'^category/(?P<category_id>\d+)/$', CategoryView.as_view(), name='category'),
+    url(r'^author/(?P<author_id>\d+)/$', AuthorView.as_view(), name='author'),
+    url(r'^search/$', SearchView.as_view(), name='search'),
     url(r'^post_detail/(?P<post_id>\d+).html$', PostView.as_view(), name='post_detail'),
     # url(r'^links/$', links)
 

@@ -49,9 +49,10 @@
                         <li><a  href="{% url 'category' cate.id %}">{{ cate.name }}</a></li>
                 {% endfor %}
           </ul>
-          <form class="navbar-form navbar-right" method="GET" action="/search">
+          <form class="navbar-form navbar-right" method="GET" action="/search/">
                     <div class="form-group">
-                        <input class="form-control" id="q" name="q" placeholder="Search" required="" type="text" value="">
+                        <!-- name, value, placeholder是最重要的 -->
+                        <input class="form-control" id="q" name="keyword" placeholder="Search" required="" type="text" value="{{ keyword  }}">
                         <button type="submit" class="btn">搜索</button>
                     </div>
           </form>

@@ -19,7 +19,7 @@
      <div class="panel-body">
         <h5 class="card-title"><a href="{% url 'post_detail' post.id %}">{{ post.title }}</a></h5>
         <div>
-            <span><strong>作者</strong>：{{ post.owner.username }}</span> &nbsp &nbsp
+            <span><strong>作者</strong>：<a href="{% url 'author' post.owner_id %}">{{ post.owner.username }}</a></span> &nbsp &nbsp
             <span><strong>分类</strong>：<a href="{% url 'category' post.category.id %}">{{ post.category.name }}</a></span> &nbsp &nbsp  
             <span><strong>标签</strong>：
             {% if post.tags.all.count %}

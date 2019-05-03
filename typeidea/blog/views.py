@@ -1,5 +1,6 @@
 from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 # Create your views here.
 from .models import Post, Tag, Category
@@ -69,3 +70,28 @@ class PostView(CommonMixin, DetailView):
     template_name = 'blog/detail.html'
     context_object_name = 'post'
     pk_url_kwarg = 'post_id' #这是从url接受的名字吗？
+
+
+class AuthorView(BasePostsView):
+    # 和完整文章列表页相比，就是增加了过滤
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        author_id = self.kwargs.get('author_id')
+        return queryset.filter(owner_id=author_id)
+
+
+class SearchView(BasePostsView):
+    # 和完整文章列表页相比，增加了过滤，展示的context_data还多了一项keywords
+    def get_context_data(self):
+        context = super().get_context_data()
+        context.update({
+            'keyword': self.request.GET.get('keyword', '')
+        })
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        keyword = self.request.GET.get('keyword')
+        if not keyword:
+            return queryset
+        return queryset.filter(Q(title__icontains=keyword) | Q(desc__icontains=keyword))
