@@ -7,10 +7,13 @@ from django.template.loader import render_to_string
 
 
 class Link(models.Model):
+    STATUS_NORMAL = 1
+    STATUS_DELETE = 0
     STATUS_ITEMS = (
-        (1, '正常'),
-        (2, '删除'),
+        (STATUS_NORMAL, '正常'),
+        (STATUS_DELETE, '删除'),
     )
+
     title = models.CharField(max_length=50, verbose_name="标题")
     href = models.URLField(verbose_name="链接")  # 默认长度200
     status = models.PositiveIntegerField(default=1, choices=STATUS_ITEMS, verbose_name="状态")
@@ -23,6 +26,7 @@ class Link(models.Model):
 
     class Meta:
         verbose_name = verbose_name_plural = "友链"
+        ordering = ['-weight', ]
 
     def __str__(self):
         return self.title
