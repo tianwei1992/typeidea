@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="{% static 'favicon.ico' %}">
+
+    <title>{% block title %}首页{% endblock %}田田田田的博客</title>
+
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+ <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+    <!-- Custom styles for this template -->
+    <!--<link href="{% static 'base.css' %}" rel="stylesheet"> -->
+
+  </head>
+
+
+    <body>
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="{% url 'all_posts' %}">首页</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+                {% for cate in navs %}
+                        <li><a  href="{% url 'category' cate.id %}">{{ cate.name }}</a></li>
+                {% endfor %}
+          </ul>
+          <form class="navbar-form navbar-right" method="GET" action="/search">
+                    <div class="form-group">
+                        <input class="form-control" id="q" name="q" placeholder="Search" required="" type="text" value="">
+                        <button type="submit" class="btn">搜索</button>
+                    </div>
+          </form>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+<hr/>
+
+<div class="container">
+      <div class="page-header">
+        <h1>Typeidea</h1>
+      </div>
+      <p class="lead">基于Django的多人博客系统</p>
+</div>
+
+<div class="container">
+<div class="row">
+
+<div class="col-md-9">
+{% block main %}
+{% endblock %}
+</div>
+
+
+<div class="col-md-3">
+    {% for sidebar in sidebars %}
+    <h4>{{ sidebar.title }}</h4>
+    {{ sidebar.content_html }}
+    {% endfor %}
+</div>
+
+</div>
+</div>
+<hr/>
+
+<footer class="bs-docs-footer">
+      <div class="container">
+        <ul class="bs-docs-footer-links">
+            {% for cate in normals %}
+            <li><a href="{% url 'category' cate.id %}">{{ cate.name }}</a></li>
+            {% endfor %}
+        </ul>
+        <p class="text-muted">template for Bootstrap, by @田田田田.</p>
+      </div>
+</footer>
+</div>
+</div>
+
+<hr/>
+
+</body>
+</html>
