@@ -22,6 +22,7 @@ from blog.views import (
     IndexView, CategoryView, TagView,
      PostView, AuthorView, SearchView
 )
+from blog.rss import LatestPostFeed
 from config.views import LinkListView
 from comment.views import CommentView
 
@@ -40,4 +41,6 @@ urlpatterns = [
     url(r'^links/$', LinkListView.as_view(), name='links'),
 
     url(r'^comment/$', CommentView.as_view(), name='comment'),
+
+    url(r'^rss|feed/', LatestPostFeed(), name='rss'),
 ]
