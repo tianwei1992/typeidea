@@ -1,6 +1,8 @@
 # Create your models here.
 from  __future__ import unicode_literals
 
+import mistune
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
@@ -24,6 +26,7 @@ class Post(models.Model):
     tags = models.ManyToManyField('Tag', verbose_name="标签", related_name='post_set')
 
     content = models.TextField(verbose_name="内容", help_text="注：目前仅支持Markdown格式数据")
+    content_html = models.TextField(verbose_name="正文html代码", blank=True, editable=False)
     status = models.IntegerField(default=1, choices=STATUS_ITEMS, verbose_name="状态")
     owner = models.ForeignKey(User, verbose_name="作者", on_delete=models.CASCADE)
 
@@ -31,9 +34,14 @@ class Post(models.Model):
     
     class Meta:
         verbose_name = verbose_name_plural = "文章"
+        ordering = ['-id']
     
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        self.content_html = mistune.markdown(self.content)
+        super().save(*args, **kwargs)
     
     @staticmethod
     def get_by_tag(tag_id):
