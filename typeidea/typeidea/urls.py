@@ -23,6 +23,7 @@ from blog.views import (
      PostView, AuthorView, SearchView
 )
 from config.views import LinkListView
+from comment.views import CommentView
 
 
 urlpatterns = [
@@ -38,4 +39,5 @@ urlpatterns = [
 
     url(r'^links/$', LinkListView.as_view(), name='links'),
 
+    url(r'^comment/$', CommentView.as_view(), name='comment'),
 ]
