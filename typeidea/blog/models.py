@@ -9,15 +9,13 @@ from django.db.models import Q
 
 
 class Post(models.Model):
+    STATUS_NORMAL = 1
+    STATUS_DELETE = 0
+    STATUS_DRAFT = 2
     STATUS_ITEMS = (
-        (1, '展示'),
-        (2, '下线'),
-    )
-    SIDE_TYPE = (
-        (1, 'HTML'),
-        (2, '最新文章'),
-        (3, '最热文章'),
-        (4, '最近评论'),
+        (STATUS_NORMAL, '正常'),
+        (STATUS_DELETE, '删除'),
+        (STATUS_DRAFT, '草稿'),
     )
 
     title = models.CharField(max_length=50, verbose_name="标题")
@@ -31,6 +29,9 @@ class Post(models.Model):
     owner = models.ForeignKey(User, verbose_name="作者", on_delete=models.CASCADE)
 
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
+
+    pv = models.PositiveIntegerField(default=1)
+    uv = models.PositiveIntegerField(default=1)
     
     class Meta:
         verbose_name = verbose_name_plural = "文章"
@@ -62,7 +63,7 @@ class Post(models.Model):
         try:
             category = Category.objects.get(id=category_id)
         except Category.DoesNotExist:
-            post_list = Post.objects.filter(status=1)
+            post_list = Post.objects.filter(status=cls.STATUS_NORMAL)
             category = None
         else:
             post_list = Post.objects.select_related('owner', 'category').filter(Q(category__id=category_id) & Q(status=1))
@@ -70,8 +71,12 @@ class Post(models.Model):
 
     @classmethod
     def latest_posts(cls):
-        queryset = cls.objects.filter(status=1)
+        queryset = cls.objects.filter(status=cls.STATUS_NORMAL)
         return queryset
+
+    @classmethod
+    def hot_posts(cls):
+        return cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')
 
 class TestManager(models.Manager):
     def get_queryset(self):
