@@ -6,6 +6,7 @@ import mistune
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
+from django.utils.functional import cached_property
 
 
 class Post(models.Model):
@@ -77,6 +78,10 @@ class Post(models.Model):
     @classmethod
     def hot_posts(cls):
         return cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')
+
+    @cached_property
+    def tag(self):
+        return ','.join(self.tags.values_list('name', flat=True))
 
 class TestManager(models.Manager):
     def get_queryset(self):

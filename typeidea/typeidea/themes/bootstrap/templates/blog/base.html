@@ -98,7 +98,13 @@
             <li><a href="{% url 'category' cate.id %}">{{ cate.name }}</a></li>
             {% endfor %}
         </ul>
-        <p class="text-muted">template for Bootstrap, by @田田田田.</p>
+        <p class="text-muted">template for Bootstrap, by @田田田田.
+        &nbsp | &nbsp
+        <a href="{% url 'rss' %}">RSS</a>
+        &nbsp | &nbsp
+        <a href="{% url 'sitemap' %}">SiteMap</a>
+        </p>
+        
       </div>
 </footer>
 </div>

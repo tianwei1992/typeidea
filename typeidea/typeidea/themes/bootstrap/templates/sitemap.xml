@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+  xmlns="https://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+{% spaceless %}
+{% for url in urlset %}
+  <url>
+    <loc>{{ url.location }}</loc>
+    {% if url.lastmod %}<lastmod>{{ url.lastmod|date:"Y-m-d" }}</lastmod>{% endif %}
+    {% if url.changefreq %}<changefreq>{{ url.changefreq }}</changefreq>{% endif %}
+    {% if url.priority %}<priority>{{ url.priority }}</priority>{% endif %}
+    <news:news>
+      {% if url.item.created_time %}<news:created_time>{{ url.item.created_time|date:"Y-m-d" }}</news:created_time>{% endif %}
+      {% if url.item.tag %}<news:keywords>{{ url.item.tag }}</news:keywords>{% endif %}
+    </news:news>
+   </url>
+{% endfor %}
+{% endspaceless %}
+</urlset>
