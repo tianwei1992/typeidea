@@ -24,3 +24,16 @@ init project
 7. 最后升级到基于类的视图，用了mixin。最顶层的是CommonMixin，ListView和DetailView。其中CommenMixin重写了get_context_data()方法，把侧边栏和导航栏一起加入到context中，这也是所有页面都要用到的，所以是common类型。在下面的一层，CommonMixin和ListView一混合，指定queryset = Post.latest_posts只要最新文章而不是全部集合，就成为BasePostsView; CommonMixin和DetailView一混合，指定DetailView空缺的pk_url_kwarg = 'post_id'就成为PostView，文章详情页。再往下一层， CategoryView和TagView都是从BasePostsView派生而来，因为要按Tag/Category过滤数据，所以重写了get_queryset；因为context里面要新加入当前的Tag/Category展示，所以重写了get_context_data()。
 
     OK!
+
+## Finish Chatper 9 -- 2019-05-06
+
+    基本完成博客主题。
+1. 划分themes，比如bootstrap就是一套主题，里面包括templates和statics，其中statics又包括css和js。这些东西都是和前端密切关联的。
+2. 新增2个页面，分别是按作者过滤，和按搜索结果过滤。直接继承完整版BasePostsView，然后重载get_queryset()和 get_context_data()实现过滤和新增展示字段。
+3. 文章列表页、详情页、友链页不仅页面上有共同的机构，context_data也有固定共同的内容（侧边栏），所以统统继承自CommonMixin，而CommonMixin里面就唯一重载了get_context_data，把原来queryset指定的自动添加的Post以外的Sidebar也一起添加进去。   
+4. 评论在两个页面都有，且页面的核心内容并不是comment而分别是Post和Link，于是为了复用，把评论区抽象成一个tag（comment_block），tag接收参数，通过传参的不同来不同的呈现。tag放在名为templatestags的文件夹下，本质上还是一个方法，只不过被tag装饰器装饰成tag，@register.inclusion_tag('comment/block.html')指定tag渲染的模板，方法return的context(dict)就是传入模板的参数。
+5. 博客读>写，所以在写入时做markdown转换，可以用mistune也可以用markdown。
+6. 新增uv、pv、RSS、SiteMap，其中统计uv和pv需要依据cookie中的uid，不存在的话可以由uid = uuid.uuid4().hex产生。
+7. 在cookie中新增字段有response.set_cookie()方法，通过新增自定义middleware来实现。
+8. CommonMix的get方法成为了非常简单的2步：super().get()和handle_visited()，在handle_visited()中处理pv和uv，update数据库时用到了F表达式。这里的逻辑是：用pv_key和uv_key来区别是否需要加1，如果请求中不带key，认为是新的请求，就要加1，否则表示key还没有过期，是旧的请求。加入key永不过期，也就是访问过再访问，永远不加1，但这是不符合pv和uv的意义。pv可以认为是分分钟过期，这1分钟访问和下1分钟访问，要算成2次访问，所以pv_key要在短时间内（比如1分钟）过期；而uv是同一天之内都算1次访问，第二天才算2次，所以设定uv_key在1天之后才过期。
+9. @cached_property相当于@property的升级版，','.join(Post.tags.values_list('name', flat=True))是把多对多外键的所有值拿出来一起拼接成1个字符串。
